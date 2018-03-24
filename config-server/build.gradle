@@ -3,4 +3,15 @@ dependencies {
     compile 'org.springframework.cloud:spring-cloud-starter-eureka'
     compile 'org.springframework.boot:spring-boot-starter-security'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
+    apply plugin: 'application'
+    apply plugin: 'docker'
 }
+buildscript {
+    repositories { mavenCentral() }
+    dependencies {
+        classpath 'se.transmode.gradle:gradle-docker:1.1'
+    }
+}
+group = 'aglover'
+sourceCompatibility = 1.7
+mainClassName = 'ActionDto'
