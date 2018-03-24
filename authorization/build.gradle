@@ -13,12 +13,29 @@ dependencies {
     apply plugin: 'application'
     apply plugin: 'docker'
 }
+//https://dzone.com/articles/build-docker-images-with-maven-and-gradle
 buildscript {
-    repositories { mavenCentral() }
-    dependencies {
-        classpath 'se.transmode.gradle:gradle-docker:1.1'
+    repositories {
+        jcenter()
     }
+    dependencies {
+        classpath 'com.bmuschko:gradle-docker-plugin:3.0.3'
+    }
+}
+apply plugin: 'com.bmuschko.docker-remote-api'
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+docker {
+    if (System.env.containsKey('DOCKER_HOST') && System.env.containsKey('DOCKER_CERT_PATH')) {
+        url = System.env.DOCKER_HOST.replace("tcp", "https")
+        certPath = new File(System.env.DOCKER_CERT_PATH)
+    }
+}
+task buildImage(type: DockerBuildImage) {
+    dependsOn assemble
+    inputDir = project.rootDir
+    tag = "arquillian/game-service:${project.version}"
 }
 group = 'aglover'
 sourceCompatibility = 1.7
 mainClassName = 'ActionDto'
+
